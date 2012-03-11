@@ -17,8 +17,14 @@ public class NagrzewanieIChlodzenieCialaMES2D {
 	// TODO code application logic here
 	System.out.print("Main start\n");
 	
-	TEMP2D myTemp2d = new TEMP2D();
+	try {
+	    TEMP2D myTemp2d = new TEMP2D();
+	    myTemp2d.go();
+	    
+	} catch (Exception e) {
+	    System.out.print("error "+e.getMessage()+"\n");
+	    e.printStackTrace();
+	}
 	
-	myTemp2d.go();
     }
 }

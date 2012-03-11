@@ -21,9 +21,25 @@ public class ELEM {
     private double[] W;
     private Gran[] Sf = new Gran[4];
 
+    public ELEM() {
+	this.Sf = new Gran[4];
+	for (int a = 0; a <this.Sf.length ; ++a) {
+	    this.Sf[a] = new Gran();
+	}
+    }
+    
+
     //<editor-fold defaultstate="collapsed" desc="seters&geters">
     public Cor_L[] getL() {
 	return L;
+    }
+
+    public Cor_L getL(int i) {
+	--i;
+	if (i < 0 || i > L.length) {
+	    throw new ArrayIndexOutOfBoundsException("L");
+	}
+	return L[i];
     }
 
     public void setL(Cor_L[] L) {
@@ -38,12 +54,38 @@ public class ELEM {
 	this.N1 = N1;
     }
 
+    public void setN1(int i, int j, double val) {
+	--i;
+	if (i < 0 || i > this.N1.length) {
+	    throw new ArrayIndexOutOfBoundsException("N1 i");
+	}
+	--j;
+	if (j < 0 || j > this.N1[0].length) {
+	    throw new ArrayIndexOutOfBoundsException("N1 j");
+	}
+
+	this.N1[i][j] = val;
+    }
+
     public double[][] getN2() {
 	return N2;
     }
 
     public void setN2(double[][] N2) {
 	this.N2 = N2;
+    }
+
+    public void setN2(int i, int j, double val) {
+	--i;
+	if (i < 0 || i > this.N2.length) {
+	    throw new ArrayIndexOutOfBoundsException("N2 i");
+	}
+	--j;
+	if (j < 0 || j > this.N2[0].length) {
+	    throw new ArrayIndexOutOfBoundsException("N2 j");
+	}
+
+	this.N2[i][j] = val;
     }
 
     public int getN_p() {
@@ -62,6 +104,27 @@ public class ELEM {
 	this.Nf = Nf;
     }
 
+    public void setNf(int i, int j, double val) {
+	--i;
+	if (i < 0 || i > this.Nf.length) {
+	    throw new ArrayIndexOutOfBoundsException("Nf i");
+	}
+	--j;
+	if (j < 0 || j > this.Nf[0].length) {
+	    throw new ArrayIndexOutOfBoundsException("Nf j");
+	}
+
+	this.Nf[i][j] = val;
+    }
+
+    public Cor_L getP(int i) {
+	--i;
+	if (i < 0 || i > P.length) {
+	    throw new ArrayIndexOutOfBoundsException("P");
+	}
+	return P[i];
+    }
+
     public Cor_L[] getP() {
 	return P;
     }
@@ -72,6 +135,14 @@ public class ELEM {
 
     public Gran[] getSf() {
 	return Sf;
+    }
+    
+     public Gran getSf(int i) {
+	 --i;
+	if (i < 0 || i > Sf.length) {
+	    throw new ArrayIndexOutOfBoundsException("Sf");
+	}
+	return Sf[i];
     }
 
     public void setSf(Gran[] Sf) {
@@ -102,4 +173,30 @@ public class ELEM {
 	this.nbnp = nbnp;
     }
     //</editor-fold>
+
+    public void allocateN12fPWL() {
+//	ALLOCATE(mEL4%N1( mEL4%nbn, mEL4%N_p ));
+//	ALLOCATE(mEL4%N2( mEL4%nbn, mEL4%N_p ));
+//	ALLOCATE(mEL4%Nf( mEL4%nbn, mEL4%N_p ));
+//	ALLOCATE(mEL4%P ( mEL4%N_p ));
+//	ALLOCATE(mEL4%W ( mEL4%N_p ));
+//	ALLOCATE(mEL4%L ( mEL4%nbn ));
+
+	this.N1 = new double[this.nbn][this.N_p];
+	this.N2 = new double[this.nbn][this.N_p];
+	this.Nf = new double[this.nbn][this.N_p];
+
+	this.P = new Cor_L[this.N_p];
+	this.W = new double[this.N_p];
+	this.L = new Cor_L[this.nbn];
+
+	for (int a = 0; a < this.P.length; ++a) {
+	    this.P[a] = new Cor_L();
+	}
+
+	for (int a = 0; a < this.L.length; ++a) {
+	    this.L[a] = new Cor_L();
+	}
+
+    }
 }
