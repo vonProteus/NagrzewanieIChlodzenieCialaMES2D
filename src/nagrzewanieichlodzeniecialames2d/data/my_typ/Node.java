@@ -2,24 +2,21 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package nagrzewanieichlodzeniecialames2d.data;
+package nagrzewanieichlodzeniecialames2d.data.my_typ;
 
 /**
  *
  * @author proteus
  */
 public class Node {
+
     private double x;
     private double y;
     private double t;
     private double CR;
-    
     private int status;
-    
+
     //<editor-fold defaultstate="collapsed" desc="seters&geters">
-    
-   
-    
     public double getCR() {
 	return CR;
     }
@@ -59,6 +56,5 @@ public class Node {
     public void setY(double y) {
 	this.y = y;
     }
-    
-     //</editor-fold>
+    //</editor-fold>
 }

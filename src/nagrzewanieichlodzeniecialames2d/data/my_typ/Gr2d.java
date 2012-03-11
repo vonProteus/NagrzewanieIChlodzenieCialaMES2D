@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package nagrzewanieichlodzeniecialames2d.data;
+package nagrzewanieichlodzeniecialames2d.data.my_typ;
 
 /**
  *

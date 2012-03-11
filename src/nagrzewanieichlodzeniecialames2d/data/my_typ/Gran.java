@@ -2,34 +2,23 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package nagrzewanieichlodzeniecialames2d.data;
+package nagrzewanieichlodzeniecialames2d.data.my_typ;
 
 /**
  *
  * @author proteus
  */
-public class ELEM {
+public class Gran {
 
-    private int nbn;
-    private int nbnp;
     private int N_p;
+    private Cor_L[] P;
+    private double[] W;
     private double[][] N1;
     private double[][] N2;
     private double[][] Nf;
-    private Cor_L[] P;
-    private Cor_L[] L;
-    private double[] W;
-    private Gran[] Sf = new Gran[4];
+    private int[] UZEL;
 
-    //<editor-fold defaultstate="collapsed" desc="seters&geters">
-    public Cor_L[] getL() {
-	return L;
-    }
-
-    public void setL(Cor_L[] L) {
-	this.L = L;
-    }
-
+    //<editor-fold defaultstate="collapsed" desc="geters&seters">
     public double[][] getN1() {
 	return N1;
     }
@@ -70,12 +59,12 @@ public class ELEM {
 	this.P = P;
     }
 
-    public Gran[] getSf() {
-	return Sf;
+    public int[] getUZEL() {
+	return UZEL;
     }
 
-    public void setSf(Gran[] Sf) {
-	this.Sf = Sf;
+    public void setUZEL(int[] UZEL) {
+	this.UZEL = UZEL;
     }
 
     public double[] getW() {
@@ -84,22 +73,6 @@ public class ELEM {
 
     public void setW(double[] W) {
 	this.W = W;
-    }
-
-    public int getNbn() {
-	return nbn;
-    }
-
-    public void setNbn(int nbn) {
-	this.nbn = nbn;
-    }
-
-    public int getNbnp() {
-	return nbnp;
-    }
-
-    public void setNbnp(int nbnp) {
-	this.nbnp = nbnp;
     }
     //</editor-fold>
 }
