@@ -16,5 +16,9 @@ public class NagrzewanieIChlodzenieCialaMES2D {
     public static void main(String[] args) {
 	// TODO code application logic here
 	System.out.print("Main start\n");
+	
+	TEMP2D myTemp2d = new TEMP2D();
+	
+	myTemp2d.go();
     }
 }
