@@ -241,30 +241,30 @@ public class TEMP2D {
     }
 
     private void GenGrid2d(double Hmax, double Bmax, int nhH, int nhB, Gr2d Gr) {
-	
+
 	int i, j, inh, ine, id;
 	int[] St = new int[4];
 
 	int i1, i2, i3, i4;
-	double  x, y, dx, dy;
+	double x, y, dx, dy;
 	boolean[] St_OK = new boolean[4];
-	
-	
-	
 
-	Gr.setNh(nhH*nhB);
-	Gr.setNe((nhH-1)*(nhB-1));
+
+
+
+	Gr.setNh(nhH * nhB);
+	Gr.setNe((nhH - 1) * (nhB - 1));
 	Gr.setNbn(4);
 	Gr.setNcn(4);
 	Gr.setNhPov(nhB);
-	
+
 
 	Gr.allocateNdEL();
 
-	dx = Bmax/(nhB-1);
-	dy = Hmax/(nhH-1);
+	dx = Bmax / (nhB - 1);
+	dy = Hmax / (nhH - 1);
 
-	x=0;
+	x = 0;
 	inh = 0;
 	for (i = 1; i <= nhB; ++i) {
 	    y = 0;
@@ -278,7 +278,7 @@ public class TEMP2D {
 	    x = x + dx;
 	}
 
-	ine=0;
+	ine = 0;
 	for (i = 1; i <= nhB - 1; ++i) {
 	    for (j = 1; j <= nhH - 1; ++j) {
 		ine = ine + 1;
@@ -292,7 +292,7 @@ public class TEMP2D {
 		Gr.getEL(ine).setNop(4, i4);
 	    }
 	}
-	
+
 	for (i = 1; i <= Gr.getNh(); ++i) {
 	    x = Gr.getND(i).getX();
 	    y = Gr.getND(i).getY();
@@ -336,13 +336,49 @@ public class TEMP2D {
 	}
 
 
-	
-	
+
+
 	//throw new UnsupportedOperationException("Not yet implemented GenGrid2d");
     }
 
     private void SetControlPoints() {
-	throw new UnsupportedOperationException("Not yet implemented SetControlPoints");
+
+
+	int i, j;
+	double Rr, Rmin;
+
+	mcpX[1 - 1] = 0.0;
+	mcpY[1 - 1] = 0.0;
+	mcpX[2 - 1] = mB0 / 2;
+	mcpY[2 - 1] = 0.0;
+	mcpX[3 - 1] = mB0;
+	mcpY[3 - 1] = 0.0;
+	mcpX[4 - 1] = 0.0;
+	mcpY[4 - 1] = mH0 / 2.0;
+	mcpX[5 - 1] = mB0 / 2;
+	mcpY[5 - 1] = mH0 / 2.0;
+	mcpX[6 - 1] = mB0;
+	mcpY[6 - 1] = mH0 / 2.0;
+	mcpX[7 - 1] = 0.0;
+	mcpY[7 - 1] = mH0;
+	mcpX[8 - 1] = mB0 / 2;
+	mcpY[8 - 1] = mH0;
+	mcpX[9 - 1] = mB0;
+	mcpY[9 - 1] = mH0;
+
+	for (j = 1; j <= 9; ++j) {
+	    Rmin = 1e10;
+	    for (i = 1; i <= mGr.getNh(); ++i) {
+		Rr = Math.sqrt((mcpX[j - 1] - mGr.getND(i).getX()) * (mcpX[j - 1] - mGr.getND(i).getX()) + (mcpY[j - 1] - mGr.getND(i).getY()) * (mcpY[j - 1] - mGr.getND(i).getY()));
+		if (Rr <= Rmin) {
+		    mContrPoints[j - 1] = i;
+		    Rmin = Rr;
+		}
+	    }
+	}
+
+
+//	throw new UnsupportedOperationException("Not yet implemented SetControlPoints");
     }
 
     private void ALLOCATE_Matrix() {
