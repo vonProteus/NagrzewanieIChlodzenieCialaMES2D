@@ -45,6 +45,7 @@ public class TEMP2D {
     public void go() {
 	double Asr, dTauMax, TauP;
 	int iTau, n, Ntau, i, iErr;
+	this.mGr = new Gr2d();
 	this.IniEL4();
 	this.InpData();
 	this.GenGrid2d(mH0, mB0, mNhH, mNhB, mGr);
@@ -260,12 +261,84 @@ public class TEMP2D {
 
 	Gr.allocateNdEL();
 
+	dx = Bmax/(nhB-1);
+	dy = Hmax/(nhH-1);
+
+	x=0;
+	inh = 0;
+	for (i = 1; i <= nhB; ++i) {
+	    y = 0;
+	    for (j = 1; j <= nhH; ++j) {
+		inh = inh + 1;
+		Gr.getND(inh).setX(x);
+		Gr.getND(inh).setY(y);
+		Gr.getND(inh).setStatus(0);
+		y = y + dy;
+	    }
+	    x = x + dx;
+	}
+
+	ine=0;
+	for (i = 1; i <= nhB - 1; ++i) {
+	    for (j = 1; j <= nhH - 1; ++j) {
+		ine = ine + 1;
+		i1 = (i - 1) * nhH + j;
+		i2 = i * nhH + j;
+		i3 = i * nhH + j + 1;
+		i4 = (i - 1) * nhH + j + 1;
+		Gr.getEL(ine).setNop(1, i1);
+		Gr.getEL(ine).setNop(2, i2);
+		Gr.getEL(ine).setNop(3, i3);
+		Gr.getEL(ine).setNop(4, i4);
+	    }
+	}
 	
+	for (i = 1; i <= Gr.getNh(); ++i) {
+	    x = Gr.getND(i).getX();
+	    y = Gr.getND(i).getY();
+	    Gr.getND(i).setStatus(0);
+	    Gr.getND(i).setT(mTbegin);
+
+
+	    if (x >= (Bmax - 0.00001)) {
+		Gr.getND(i).setStatus(1);
+	    }
+
+	    if (x <= 0.00001) {
+		Gr.getND(i).setStatus(1);
+	    }
+
+	    if (y >= (Hmax - 0.00001)) {
+		Gr.getND(i).setStatus(1);
+	    }
+	    if (y <= 0.00001) {
+		Gr.getND(i).setStatus(1);
+	    }
+	}
+
+	for (ine = 1; ine <= Gr.getNe(); ++ine) {
+	    for (i = 1; i <= 4; ++i) {
+		id = Math.abs(Gr.getEL(ine).getNop(i));
+		St[i - 1] = Gr.getND(id).getStatus();
+	    }
+	    St_OK[2 - 1] = (St[1 - 1] >= 1) && (St[2 - 1] >= 1);
+	    St_OK[3 - 1] = (St[2 - 1] >= 1) && (St[3 - 1] >= 1);
+	    St_OK[4 - 1] = (St[3 - 1] >= 1) && (St[4 - 1] >= 1);
+	    St_OK[1 - 1] = (St[4 - 1] >= 1) && (St[1 - 1] >= 1);
+
+	    Gr.getEL(ine).setNpov(0);
+	    for (i = 1; i <= 4; ++i) {
+		if (St_OK[i - 1]) {
+		    Gr.getEL(ine).setNpov(Gr.getEL(ine).getNpov() + 1);
+		    Gr.getEL(ine).setaPov(Gr.getEL(ine).getNpov(), i);
+		}
+	    }
+	}
 
 
 	
 	
-	throw new UnsupportedOperationException("Not yet implemented GenGrid2d");
+	//throw new UnsupportedOperationException("Not yet implemented GenGrid2d");
     }
 
     private void SetControlPoints() {

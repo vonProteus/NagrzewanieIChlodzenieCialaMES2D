@@ -22,6 +22,14 @@ public class Gr2d {
     public Element[] getEL() {
 	return EL;
     }
+    
+     public Element getEL(int i) {
+	 --i;
+	if (i < 0 || i > EL.length) {
+	    throw new ArrayIndexOutOfBoundsException("EL");
+	}
+	return EL[i];
+    }
 
     public void setEL(Element[] EL) {
 	this.EL = EL;
@@ -29,6 +37,14 @@ public class Gr2d {
 
     public Node[] getND() {
 	return ND;
+    }
+    public Node getND(int i) {
+	--i;
+	if (i < 0 || i > ND.length) {
+	    throw new ArrayIndexOutOfBoundsException("ND");
+	}
+
+	return ND[i];
     }
 
     public void setND(Node[] ND) {
@@ -87,6 +103,6 @@ public class Gr2d {
 	for (int a = 0; a < EL.length ; ++a) {
 	    EL[a] = new Element();
 	}
-	throw new UnsupportedOperationException("Not yet implemented");
+//	throw new UnsupportedOperationException("Not yet implemented");
     }
 }
