@@ -63,7 +63,7 @@ public class TEMP2D {
 
 	mTau = 0;
 
-	for (n = 1; n  < Ntau;  ++n) {
+	for (n = 1; n < Ntau; ++n) {
 	    mTau = mTau + mdTime;
 	    this.SOLVER();
 	    this.WriteControlPoints();
@@ -77,18 +77,18 @@ public class TEMP2D {
 	int iP, i;
 
 	Alfa = 1 / (Math.sqrt(3.0));
-	mEL4.setNbn(4); 
+	mEL4.setNbn(4);
 	mEL4.setN_p(4);
-	
+
 	mEL4.allocateN12fPWL();
-	
-	
+
+
 	for (int a = 0; a < mEL4.getW().length; ++a) {
 	    mEL4.getW()[a] = 1.0;
 	}
 
-	
-	
+
+
 	mEL4.getP(1).setE(-Alfa);
 	mEL4.getP(1).setN(-Alfa);
 	mEL4.getP(2).setE(Alfa);
@@ -143,17 +143,17 @@ public class TEMP2D {
 
 	mEL4.getSf(1).setUZEL(1, 4);
 	mEL4.getSf(1).setUZEL(2, 1);
-	
+
 	mEL4.getSf(2).setUZEL(1, 1);
 	mEL4.getSf(2).setUZEL(2, 2);
-	
+
 	mEL4.getSf(3).setUZEL(1, 2);
 	mEL4.getSf(3).setUZEL(2, 3);
-	
+
 	mEL4.getSf(4).setUZEL(1, 3);
 	mEL4.getSf(4).setUZEL(2, 4);
 
-	
+
 	mEL4.getSf(1).getP(1).setN(Alfa);
 	mEL4.getSf(1).getP(1).setE(-1);
 	mEL4.getSf(1).getP(2).setN(-Alfa);
@@ -170,9 +170,9 @@ public class TEMP2D {
 	mEL4.getSf(4).getP(1).setE(Alfa);
 	mEL4.getSf(4).getP(2).setN(1);
 	mEL4.getSf(4).getP(2).setE(-Alfa);
-	
-	
-	
+
+
+
 	for (i = 1; i <= 4; ++i) {
 	    for (iP = 1; iP <= 2; ++iP) {
 		e = mEL4.getSf(i).getP(iP).getE();
@@ -203,27 +203,27 @@ public class TEMP2D {
     }
 
     private void InpData() {
-	
+
 	File file = new File("/Users/proteus/Documents/AGH/rok5/semestr10/Zaawansowane metody obliczeń w inżynierii/temp2d/indata.t2d");
 	int ch;
 	StringBuffer strContener = new StringBuffer("");
 	FileInputStream fin = null;
-	
+
 	try {
 	    fin = new FileInputStream(file);
-	    
-	    while ((ch = fin.read()) != -1) {		
-		strContener.append((char)ch);
+
+	    while ((ch = fin.read()) != -1) {
+		strContener.append((char) ch);
 	    }
 	    fin.close();
 	} catch (Exception e) {
-	    System.out.print(e.getMessage()+"\n");
+	    System.out.print(e.getMessage() + "\n");
 	    e.printStackTrace();
 	}
-	
+
 	String[] line = strContener.toString().split("\n");
-	
-	
+
+
 	mTbegin = Double.parseDouble(line[4].split(" ")[0]);
 	mTime = Double.parseDouble(line[5].split(" ")[0]);
 	mdTime = Double.parseDouble(line[6].split(" ")[0]);
@@ -237,19 +237,34 @@ public class TEMP2D {
 	mK = Double.parseDouble(line[14].split(" ")[0]);
 	mR = Double.parseDouble(line[15].split(" ")[0]);
 
-	
-	
-	
-	//System.out.print(strContener+"\n");
-	
-	
-	
-	
-	
-	throw new UnsupportedOperationException("Not yet implemented InpData");
     }
 
-    private void GenGrid2d(double _mH0, double _mB0, int _mNhH, int _mNhB, Gr2d _mGr) {
+    private void GenGrid2d(double Hmax, double Bmax, int nhH, int nhB, Gr2d Gr) {
+	
+	int i, j, inh, ine, id;
+	int[] St = new int[4];
+
+	int i1, i2, i3, i4;
+	double  x, y, dx, dy;
+	boolean[] St_OK = new boolean[4];
+	
+	
+	
+
+	Gr.setNh(nhH*nhB);
+	Gr.setNe((nhH-1)*(nhB-1));
+	Gr.setNbn(4);
+	Gr.setNcn(4);
+	Gr.setNhPov(nhB);
+	
+
+	Gr.allocateNdEL();
+
+	
+
+
+	
+	
 	throw new UnsupportedOperationException("Not yet implemented GenGrid2d");
     }
 

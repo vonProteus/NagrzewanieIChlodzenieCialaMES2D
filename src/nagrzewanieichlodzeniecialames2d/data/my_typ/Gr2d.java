@@ -75,4 +75,18 @@ public class Gr2d {
 	this.nhPov = nhPov;
     }
     //</editor-fold>
+
+    public void allocateNdEL() {
+	
+	ND = new Node[nh];
+	EL = new Element[ne];
+	
+	for (int a = 0; a < ND.length ; ++a) {
+	    ND[a] = new Node();
+	}
+	for (int a = 0; a < EL.length ; ++a) {
+	    EL[a] = new Element();
+	}
+	throw new UnsupportedOperationException("Not yet implemented");
+    }
 }
