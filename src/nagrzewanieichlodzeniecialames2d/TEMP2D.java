@@ -4,6 +4,8 @@
  */
 package nagrzewanieichlodzeniecialames2d;
 
+import java.io.File;
+import java.io.FileInputStream;
 import nagrzewanieichlodzeniecialames2d.data.my_typ.ELEM;
 import nagrzewanieichlodzeniecialames2d.data.my_typ.Gr2d;
 
@@ -201,6 +203,49 @@ public class TEMP2D {
     }
 
     private void InpData() {
+	
+	File file = new File("/Users/proteus/Documents/AGH/rok5/semestr10/Zaawansowane metody obliczeń w inżynierii/temp2d/indata.t2d");
+	int ch;
+	StringBuffer strContener = new StringBuffer("");
+	FileInputStream fin = null;
+	
+	try {
+	    fin = new FileInputStream(file);
+	    
+	    while ((ch = fin.read()) != -1) {		
+		strContener.append((char)ch);
+	    }
+	    fin.close();
+	} catch (Exception e) {
+	    System.out.print(e.getMessage()+"\n");
+	    e.printStackTrace();
+	}
+	
+	String[] line = strContener.toString().split("\n");
+	
+	
+	mTbegin = Double.parseDouble(line[4].split(" ")[0]);
+	mTime = Double.parseDouble(line[5].split(" ")[0]);
+	mdTime = Double.parseDouble(line[6].split(" ")[0]);
+	mT_otoczenia = Double.parseDouble(line[7].split(" ")[0]);
+	mAlfa = Double.parseDouble(line[8].split(" ")[0]);
+	mH0 = Double.parseDouble(line[9].split(" ")[0]);
+	mB0 = Double.parseDouble(line[10].split(" ")[0]);
+	mNhH = Integer.parseInt(line[11].split(" ")[0]);
+	mNhB = Integer.parseInt(line[12].split(" ")[0]);
+	mC = Double.parseDouble(line[13].split(" ")[0]);
+	mK = Double.parseDouble(line[14].split(" ")[0]);
+	mR = Double.parseDouble(line[15].split(" ")[0]);
+
+	
+	
+	
+	//System.out.print(strContener+"\n");
+	
+	
+	
+	
+	
 	throw new UnsupportedOperationException("Not yet implemented InpData");
     }
 
