@@ -4,10 +4,7 @@
  */
 package nagrzewanieichlodzeniecialames2d;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
+import java.io.*;
 import nagrzewanieichlodzeniecialames2d.data.my_typ.ELEM;
 import nagrzewanieichlodzeniecialames2d.data.my_typ.Gr2d;
 
@@ -418,46 +415,29 @@ public class TEMP2D {
 
     private void WriteControlPointsBegin() {
 
-//	
-//	OPEN (88, FILE='OutDataT.txt');
-//	OPEN (89, FILE='OutDataCR.txt');
-//
-//	do iPrint=88,89
-//		WRITE(iPrint,'(" **********************************************************")')
-//		WRITE(iPrint,'(" * PROGRAM PLATE2d                                        *")')
-//		WRITE(iPrint,'(" * Milenin Andryj CopyRight, 2008                         *")')
-//		WRITE(iPrint,'(" * milenin@agh.edu.pl                               *")')
-//		WRITE(iPrint,'(" ********************************************************** ")')
-//		WRITE(iPrint,'("  ")')
-//		WRITE(iPrint,'("  ")')
-//
-//		WRITE(iPrint,'(" ********** Coordinates of the control points ************")')
-//		do i=1,9
-//			WRITE(iPrint,'(" No=", I4," X=", F8.2," Y=", F8.2)') mContrPoints(i),mcpX(i),mcpY(i);
-//		end do
-//		WRITE(iPrint,'(" ********************************************************** ")')
-//	end do;
-
-
 	try {
 	    FileWriter fstreamT = new FileWriter("OutDataT.txt");
 	    BufferedWriter outT = new BufferedWriter(fstreamT);
 	    FileWriter fstreamCR = new FileWriter("OutDataCR.txt");
 	    BufferedWriter outCR = new BufferedWriter(fstreamCR);
-//	    outT.write("Hello Java");
 
 	    outT.write(" ********** Coordinates of the control points ************\n");
 	    outCR.write(" ********** Coordinates of the control points ************\n");
+
 	    for (int i = 0; i < 9; ++i) {
-		outT.write(" No=" + mContrPoints[i] + " X=" + mcpX[i] + " Y=" + mcpY[i]+"\n");
-		outCR.write(" No=" + mContrPoints[i] + " X=" + mcpX[i] + " Y=" + mcpY[i]+"\n");
+		outT.write(" No=" + mContrPoints[i] + " X=" + mcpX[i] + " Y=" + mcpY[i] + "\n");
+		outCR.write(" No=" + mContrPoints[i] + " X=" + mcpX[i] + " Y=" + mcpY[i] + "\n");
 	    }
+
+
 	    outT.write(" **********************************************************\n\n\n");
 	    outCR.write(" **********************************************************\n\n\n");
+
+
 	    outCR.close();
 	    outT.close();
 	} catch (Exception e) {
-	    System.out.print(e.getMessage()+"\n");
+	    System.out.print(e.getMessage() + "\n");
 	    e.printStackTrace();
 	}
 
@@ -466,7 +446,58 @@ public class TEMP2D {
     }
 
     private void WriteControlPoints() {
-	throw new UnsupportedOperationException("Not yet implemented WriteControlPoints");
+
+
+	BufferedWriter outT = null;
+	BufferedWriter outCR = null;
+	try {
+	    FileWriter fstreamT = new FileWriter("OutDataT.txt", true);
+	    outT = new BufferedWriter(fstreamT);
+	    FileWriter fstreamCR = new FileWriter("OutDataCR.txt", true);
+	    outCR = new BufferedWriter(fstreamCR);
+
+	    StringBuffer stringCR = new StringBuffer(mTau+";");
+	    StringBuffer stringT = new StringBuffer(mTau+";");
+	    
+	    for (int a = 1; a <=9 ; ++a) {
+		stringT.append(mGr.getND(mContrPoints[a-1]).getT()+";");
+		stringCR.append(mGr.getND(mContrPoints[a-1]).getCR()+";");
+	    }
+	    
+	    outCR.write(stringCR.toString());
+	    outT.write(stringT.toString());
+	   
+	    System.out.print(mTau+" "+ mGr.getND(mContrPoints[1]).getT()+" "+ mGr.getND(mContrPoints[3]).getT()+" "+ mGr.getND(mContrPoints[4]).getT()+" "+ mGr.getND(mContrPoints[6]).getT() +"\n");
+
+	    outT.newLine();
+	    outT.flush();
+	    outCR.newLine();
+	    outCR.flush();
+	} catch (IOException ioe) {
+	    ioe.printStackTrace();
+	} finally {                       // always close the file
+	    if (outCR != null) {
+		try {
+		    outCR.close();
+		} catch (IOException ioe2) {
+		    // just ignore it
+		}
+	    }
+	    if (outT != null) {
+		try {
+
+		    outT.close();
+		} catch (IOException ioe2) {
+		    // just ignore it
+		}
+
+	    }
+
+	} // end try/catch/finally
+
+
+
+//	throw new UnsupportedOperationException("Not yet implemented WriteControlPoints");
     }
 
     private void SOLVER() {
