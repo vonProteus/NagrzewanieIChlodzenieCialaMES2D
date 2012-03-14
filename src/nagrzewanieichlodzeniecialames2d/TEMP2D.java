@@ -204,7 +204,7 @@ public class TEMP2D {
 
     private void InpData() {
 
-	File file = new File("/Users/proteus/Documents/AGH/rok5/semestr10/Zaawansowane metody obliczeń w inżynierii/temp2d/indata.t2d");
+	File file = new File("indata.t2d");
 	int ch;
 	StringBuffer strContener = new StringBuffer("");
 	FileInputStream fin = null;
@@ -501,6 +501,60 @@ public class TEMP2D {
     }
 
     private void SOLVER() {
-	throw new UnsupportedOperationException("Not yet implemented SOLVER");
+	int NEL;
+	int[] nk = new int[4];
+	int jB, iB, NeMaxB, NCODA, i, j, ii, jj;
+	int iErr;
+
+	for (int a = 0; a < mA.length; ++a) {
+	    for (int b = 0; b < mA[0].length; ++b) {
+		mA[a][b] = 0;
+	    }
+	}
+
+	for (int a = 0; a < mB.length; ++a) {
+	    mB[a] = 0;
+	}
+
+	for (int a = 0; a < mX.length; ++a) {
+	    mX[a] = 0;
+	}
+
+	
+	for(NEL=1; NEL <= mGr.getNe(); ++NEL){
+		for( i=1; i <= mEL4.getNbn(); ++i){
+			nk[i-1] = mGr.getEL(NEL).getNop(i);
+		}
+
+// TODO CALL FeSM_heat( NEL ); 
+
+	    for (i = 1; i <= mEL4.getNbn(); ++i) {
+		ii = nk[i - 1];
+		for (j = 1; j <= mEL4.getNbn(); ++j) {
+		    jj = nk[j - 1];
+		    iB = mLDA + ii - jj;
+		    if ((jj >= ii) && (iB <= mLDA)) {
+			mA[iB - 1][jj - 1] = mA[iB - 1][jj - 1] + est[i - 1][j - 1];
+		    }
+//	!			mA(ii,jj) = mA(ii,jj) + est(i,j); ! wypelnienie pelnej matrycy
+		}
+		mB[ii - 1] = mB[ii - 1] + r[i - 1];
+	    }
+	}
+
+	NCODA = mLDA-1;
+// TODO	CALL DLSAQS (mGr%nh, mA, mLDA, NCODA, mB, mX)
+// Program rozwiazania ukladu rownan z pasmowej matrycej
+
+//		NCODA=1;
+// TODO	CALL DLSARG (mGr%nh, mA, mGr%nh, mB, NCODA, mX)
+// Program rozwiπzania ukladu rownan z pelnej matrycej
+
+	for (i=1; i<= mGr.getNh();++i){
+		mGr.getND(i).setCR(( mGr.getND(i).getT()-mX[i-1] ) / mdTime);
+		mGr.getND(i).setT(mX[i-1]);
+	}
+	
+//	throw new UnsupportedOperationException("Not yet implemented SOLVER");
     }
 }

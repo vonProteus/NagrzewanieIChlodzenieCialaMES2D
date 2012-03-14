@@ -14,7 +14,6 @@ public class NagrzewanieIChlodzenieCialaMES2D {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-	// TODO code application logic here
 	System.out.print("Main start\n");
 	
 	try {
@@ -26,5 +25,6 @@ public class NagrzewanieIChlodzenieCialaMES2D {
 	    e.printStackTrace();
 	}
 	
+	System.out.print("Main end\n");
     }
 }
