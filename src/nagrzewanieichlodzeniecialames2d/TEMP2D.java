@@ -4,8 +4,10 @@
  */
 package nagrzewanieichlodzeniecialames2d;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import nagrzewanieichlodzeniecialames2d.data.my_typ.ELEM;
 import nagrzewanieichlodzeniecialames2d.data.my_typ.Gr2d;
 
@@ -415,7 +417,52 @@ public class TEMP2D {
     }
 
     private void WriteControlPointsBegin() {
-	throw new UnsupportedOperationException("Not yet implemented WriteControlPointsBegin");
+
+//	
+//	OPEN (88, FILE='OutDataT.txt');
+//	OPEN (89, FILE='OutDataCR.txt');
+//
+//	do iPrint=88,89
+//		WRITE(iPrint,'(" **********************************************************")')
+//		WRITE(iPrint,'(" * PROGRAM PLATE2d                                        *")')
+//		WRITE(iPrint,'(" * Milenin Andryj CopyRight, 2008                         *")')
+//		WRITE(iPrint,'(" * milenin@agh.edu.pl                               *")')
+//		WRITE(iPrint,'(" ********************************************************** ")')
+//		WRITE(iPrint,'("  ")')
+//		WRITE(iPrint,'("  ")')
+//
+//		WRITE(iPrint,'(" ********** Coordinates of the control points ************")')
+//		do i=1,9
+//			WRITE(iPrint,'(" No=", I4," X=", F8.2," Y=", F8.2)') mContrPoints(i),mcpX(i),mcpY(i);
+//		end do
+//		WRITE(iPrint,'(" ********************************************************** ")')
+//	end do;
+
+
+	try {
+	    FileWriter fstreamT = new FileWriter("OutDataT.txt");
+	    BufferedWriter outT = new BufferedWriter(fstreamT);
+	    FileWriter fstreamCR = new FileWriter("OutDataCR.txt");
+	    BufferedWriter outCR = new BufferedWriter(fstreamCR);
+//	    outT.write("Hello Java");
+
+	    outT.write(" ********** Coordinates of the control points ************\n");
+	    outCR.write(" ********** Coordinates of the control points ************\n");
+	    for (int i = 0; i < 9; ++i) {
+		outT.write(" No=" + mContrPoints[i] + " X=" + mcpX[i] + " Y=" + mcpY[i]+"\n");
+		outCR.write(" No=" + mContrPoints[i] + " X=" + mcpX[i] + " Y=" + mcpY[i]+"\n");
+	    }
+	    outT.write(" **********************************************************\n\n\n");
+	    outCR.write(" **********************************************************\n\n\n");
+	    outCR.close();
+	    outT.close();
+	} catch (Exception e) {
+	    System.out.print(e.getMessage()+"\n");
+	    e.printStackTrace();
+	}
+
+
+//	throw new UnsupportedOperationException("Not yet implemented WriteControlPointsBegin");
     }
 
     private void WriteControlPoints() {
