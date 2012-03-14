@@ -456,18 +456,18 @@ public class TEMP2D {
 	    FileWriter fstreamCR = new FileWriter("OutDataCR.txt", true);
 	    outCR = new BufferedWriter(fstreamCR);
 
-	    StringBuffer stringCR = new StringBuffer(mTau+";");
-	    StringBuffer stringT = new StringBuffer(mTau+";");
-	    
-	    for (int a = 1; a <=9 ; ++a) {
-		stringT.append(mGr.getND(mContrPoints[a-1]).getT()+";");
-		stringCR.append(mGr.getND(mContrPoints[a-1]).getCR()+";");
+	    StringBuffer stringCR = new StringBuffer(mTau + ";");
+	    StringBuffer stringT = new StringBuffer(mTau + ";");
+
+	    for (int a = 1; a <= 9; ++a) {
+		stringT.append(mGr.getND(mContrPoints[a - 1]).getT() + ";");
+		stringCR.append(mGr.getND(mContrPoints[a - 1]).getCR() + ";");
 	    }
-	    
+
 	    outCR.write(stringCR.toString());
 	    outT.write(stringT.toString());
-	   
-	    System.out.print(mTau+" "+ mGr.getND(mContrPoints[1]).getT()+" "+ mGr.getND(mContrPoints[3]).getT()+" "+ mGr.getND(mContrPoints[4]).getT()+" "+ mGr.getND(mContrPoints[6]).getT() +"\n");
+
+	    System.out.print(mTau + " " + mGr.getND(mContrPoints[1]).getT() + " " + mGr.getND(mContrPoints[3]).getT() + " " + mGr.getND(mContrPoints[4]).getT() + " " + mGr.getND(mContrPoints[6]).getT() + "\n");
 
 	    outT.newLine();
 	    outT.flush();
@@ -520,13 +520,14 @@ public class TEMP2D {
 	    mX[a] = 0;
 	}
 
-	
-	for(NEL=1; NEL <= mGr.getNe(); ++NEL){
-		for( i=1; i <= mEL4.getNbn(); ++i){
-			nk[i-1] = mGr.getEL(NEL).getNop(i);
-		}
+
+	for (NEL = 1; NEL <= mGr.getNe(); ++NEL) {
+	    for (i = 1; i <= mEL4.getNbn(); ++i) {
+		nk[i - 1] = mGr.getEL(NEL).getNop(i);
+	    }
 
 // TODO CALL FeSM_heat( NEL ); 
+	    this.FeSM_heat(NEL);
 
 	    for (i = 1; i <= mEL4.getNbn(); ++i) {
 		ii = nk[i - 1];
@@ -542,7 +543,7 @@ public class TEMP2D {
 	    }
 	}
 
-	NCODA = mLDA-1;
+	NCODA = mLDA - 1;
 // TODO	CALL DLSAQS (mGr%nh, mA, mLDA, NCODA, mB, mX)
 // Program rozwiazania ukladu rownan z pasmowej matrycej
 
@@ -550,11 +551,34 @@ public class TEMP2D {
 // TODO	CALL DLSARG (mGr%nh, mA, mGr%nh, mB, NCODA, mX)
 // Program rozwiπzania ukladu rownan z pelnej matrycej
 
-	for (i=1; i<= mGr.getNh();++i){
-		mGr.getND(i).setCR(( mGr.getND(i).getT()-mX[i-1] ) / mdTime);
-		mGr.getND(i).setT(mX[i-1]);
+	for (i = 1; i <= mGr.getNh(); ++i) {
+	    mGr.getND(i).setCR((mGr.getND(i).getT() - mX[i - 1]) / mdTime);
+	    mGr.getND(i).setT(mX[i - 1]);
 	}
-	
+
 //	throw new UnsupportedOperationException("Not yet implemented SOLVER");
+    }
+
+    private void FeSM_heat(int NEL) {
+	for (int a = 0; a < est.length; ++a) {
+	    for (int b = 0; b < est[0].length; ++b) {
+		est[a][b] = 0;
+	    }
+	}
+	for (int a = 0; a < r.length; ++a) {
+	    r[a] = 0;
+	}
+	this.PRE_heat_mat(NEL);
+	this.PRE_heat_pov_mat(NEL);
+
+//	throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    private void PRE_heat_mat(int NEL) {
+	throw new UnsupportedOperationException("Not yet implemented PRE_heat_mat");
+    }
+
+    private void PRE_heat_pov_mat(int NEL) {
+	throw new UnsupportedOperationException("Not yet implemented PRE_heat_pov_mat");
     }
 }
