@@ -382,7 +382,36 @@ public class TEMP2D {
     }
 
     private void ALLOCATE_Matrix() {
-	throw new UnsupportedOperationException("Not yet implemented ALLOCATE_Matrix");
+
+	int NEL, i, j, ii, jj, jB, NeMaxB, ierr;
+	int[] nk = new int[4];
+
+	mLDA = 0;
+	for (NEL = 1; NEL <= mGr.getNe(); ++NEL) {
+	    for (i = 1; i <= mEL4.getNbn(); ++i) {
+		nk[i - 1] = mGr.getEL(NEL).getNop(i);
+	    }
+	    for (i = 1; i <= mEL4.getNbn(); ++i) {
+		ii = nk[i - 1];
+		for (j = 1; j <= mEL4.getNbn(); ++j) {
+		    jj = nk[j - 1];
+		    jB = jj - ii + 1;
+		    if (jB >= mLDA) {
+			mLDA = jB;
+			NeMaxB = NEL;
+		    }
+		}
+	    }
+	}
+
+
+
+	mA = new double[mLDA][mGr.getNh()];
+//	mA = new double[mGr.getNh()][mGr.getNh()];
+	mB = new double[mGr.getNh()];
+	mX = new double[mGr.getNh()];
+
+//	throw new UnsupportedOperationException("Not yet implemented ALLOCATE_Matrix");
     }
 
     private void WriteControlPointsBegin() {
