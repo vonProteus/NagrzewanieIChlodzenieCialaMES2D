@@ -526,7 +526,7 @@ public class TEMP2D {
 		nk[i - 1] = mGr.getEL(NEL).getNop(i);
 	    }
 
-	    
+
 	    this.FeSM_heat(NEL);
 
 	    for (i = 1; i <= mEL4.getNbn(); ++i) {
@@ -630,6 +630,56 @@ public class TEMP2D {
     }
 
     private void PRE_heat_pov_mat(int NEL) {
-	throw new UnsupportedOperationException("Not yet implemented PRE_heat_pov_mat");
+
+	int I, j, N, P, Id, iPov;
+	double DetJ, Ni, Nn, Pn;
+	double[] X, Y;
+	X = new double[4];
+	Y = new double[4];
+	DetJ = 0;
+	Nn = 0;
+
+	for (I = 1; I <= 4; ++I) {
+	    Id = Math.abs(mGr.getEL(NEL).getNop(I));
+	    X[I] = mGr.getND(Id).getX();
+	    Y[I] = mGr.getND(Id).getY();
+	}
+
+	for (iPov = 1; iPov <= mGr.getEL(NEL).getNpov(); ++iPov) {
+
+	    Id = mGr.getEL(NEL).getaPov(iPov); //! Lokalny numer powierchni elementu
+
+	    switch (Id) {
+		case 1:
+		    DetJ = Math.sqrt((X[4 - 1] - X[1 - 1]) * (X[4 - 1] - X[1 - 1]) + (Y[4 - 1] - Y[1 - 1]) * (Y[4 - 1] - Y[1 - 1]));
+		    break;
+		case 2:
+		    DetJ = Math.sqrt((X[1 - 1] - X[2 - 1]) * (X[1 - 1] - X[2 - 1]) + (Y[1 - 1] - Y[2 - 1]) * (Y[1 - 1] - Y[2 - 1]));
+		    break;
+		case 3:
+		    DetJ = Math.sqrt((X[2 - 1] - X[3 - 1]) * (X[2 - 1] - X[3 - 1]) + (Y[2 - 1] - Y[3 - 1]) * (Y[2 - 1] - Y[3 - 1]));
+		    break;
+		case 4:
+		    DetJ = Math.sqrt((X[3 - 1] - X[4 - 1]) * (X[3 - 1] - X[4 - 1]) + (Y[3 - 1] - Y[4 - 1]) * (Y[3 - 1] - Y[4 - 1]));
+		    break;
+	    }
+
+
+
+	    for (P = 1; P <= 2; ++P) {
+		for (N = 1; N <= 4; ++N) {
+//		  ! Petla po gropam rownan (wierszam matrycy)
+		    for (I = 1; I <= 4; ++I) {
+//			  ! petla po kolumnam matrycy
+			Ni = mEL4.getSf(Id).getNf(I, P);
+			Nn = mEL4.getSf(Id).getNf(N, P);
+			est[N][I] = est[N][I] + mAlfa * Nn * Ni * DetJ;
+		    }
+		    Pn = mAlfa * mT_otoczenia * Nn * DetJ;
+		    r[N] = r[N] + Pn;
+		}
+	    }
+	}
+//	throw new UnsupportedOperationException("Not yet implemented PRE_heat_pov_mat");
     }
 }

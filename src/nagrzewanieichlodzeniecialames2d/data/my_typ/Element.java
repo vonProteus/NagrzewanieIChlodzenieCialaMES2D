@@ -26,6 +26,13 @@ public class Element {
     public int[] getaPov() {
 	return aPov;
     }
+    public int getaPov(int i) {
+	 --i;
+	if (i < 0 || i > aPov.length) {
+	    throw new ArrayIndexOutOfBoundsException("aPov");
+	}
+	return aPov[i];
+    }
 
     public void setaPov(int[] aPov) {
 	this.aPov = aPov;
