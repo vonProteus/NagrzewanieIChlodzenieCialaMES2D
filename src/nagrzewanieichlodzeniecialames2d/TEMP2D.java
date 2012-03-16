@@ -526,7 +526,7 @@ public class TEMP2D {
 		nk[i - 1] = mGr.getEL(NEL).getNop(i);
 	    }
 
-// TODO CALL FeSM_heat( NEL ); 
+	    
 	    this.FeSM_heat(NEL);
 
 	    for (i = 1; i <= mEL4.getNbn(); ++i) {
@@ -575,7 +575,58 @@ public class TEMP2D {
     }
 
     private void PRE_heat_mat(int NEL) {
-	throw new UnsupportedOperationException("Not yet implemented PRE_heat_mat");
+
+	int I, j, N, P, Id;
+	double[][] J_, J_inv; //! Matruca Jakobiego i dwrotna matryca 2x2
+	double DetJ, Ni, Nn, Hin, Cin;
+	double T0p;
+	double[] Ndx, Ndy;  //! Pochodny funkcji ksztaltu wzgledem X i Y vec4
+	double[] X, Y, Temp_0; // vec4 
+
+	J_ = new double[2][2];
+	J_inv = new double[2][2];
+	Ndx = new double[4];
+	Ndy = new double[4];
+	X = new double[4];
+	Y = new double[4];
+	Temp_0 = new double[4];
+	DetJ = 0;
+
+
+	for (I = 1; I <= mEL4.getNbn(); ++I) {
+	    Id = Math.abs(mGr.getEL(NEL).getNop(I));
+	    X[I] = mGr.getND(Id).getX();
+	    Y[I] = mGr.getND(Id).getY();
+	    Temp_0[I] = mGr.getND(Id).getT();
+	}
+
+	for (P = 1; P <= mEL4.getN_p(); ++P) {
+	    // TODO CALL Jacob_2d(J_,J_inv,P,mEL4%N_p,mEL4%NBN, mEL4%N1, mEL4%N2, X,Y,DetJ);
+	    T0p = 0;
+	    for (I = 1; I <= mEL4.getNbn(); ++I) {
+		Ndx[I - 1] = mEL4.getN1(I, P) * J_inv[1 - 1][1 - 1] + mEL4.getN2(I, P) * J_inv[1 - 1][2 - 1];
+		Ndy[I - 1] = mEL4.getN1(I, P) * J_inv[2 - 1][1 - 1] + mEL4.getN2(I, P) * J_inv[2 - 1][2 - 1];
+		Ni = mEL4.getNf(I, I);
+		T0p = T0p + Temp_0[I - 1] * Ni;
+	    }
+
+	    DetJ = Math.abs(DetJ) * mEL4.getW(P);
+
+	    for (N = 1; N <= mEL4.getNbn(); ++N) {
+		for (I = 1; I <= mEL4.getNbn(); ++I) {
+		    Ni = mEL4.getNf(I, P);
+		    Nn = mEL4.getNf(N, P);
+		    Hin = mK * (Ndx[N - 1] * Ndx[I - 1] + Ndy[N - 1] * Ndy[I - 1]) * DetJ;	// ! formula (3.14)
+		    Cin = mC * mR * Nn * Ni * DetJ;						// ! formula(4.3)
+		    est[N - 1][I - 1] = est[N - 1][I - 1] + Hin + Cin / mdTime;			// ! formula(4.8)
+		    r[N - 1] = r[N - 1] + (Cin / mdTime) * T0p;
+		}
+//!			Q = 0.8*Tp*Hp
+//!			r(n)=r(n) + Nn*Q*DetJ;
+	    }
+	}
+
+//	throw new UnsupportedOperationException("Not yet implemented PRE_heat_mat");
     }
 
     private void PRE_heat_pov_mat(int NEL) {

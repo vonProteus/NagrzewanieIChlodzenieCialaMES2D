@@ -23,11 +23,10 @@ public class ELEM {
 
     public ELEM() {
 	this.Sf = new Gran[4];
-	for (int a = 0; a <this.Sf.length ; ++a) {
+	for (int a = 0; a < this.Sf.length; ++a) {
 	    this.Sf[a] = new Gran();
 	}
     }
-    
 
     //<editor-fold defaultstate="collapsed" desc="seters&geters">
     public Cor_L[] getL() {
@@ -50,6 +49,18 @@ public class ELEM {
 	return N1;
     }
 
+    public double getN1(int i, int j) {
+	--i;
+	if (i < 0 || i > this.N1.length) {
+	    throw new ArrayIndexOutOfBoundsException("N1 i");
+	}
+	--j;
+	if (j < 0 || j > this.N1[0].length) {
+	    throw new ArrayIndexOutOfBoundsException("N1 j");
+	}
+	return N1[i][j];
+    }
+
     public void setN1(double[][] N1) {
 	this.N1 = N1;
     }
@@ -69,6 +80,18 @@ public class ELEM {
 
     public double[][] getN2() {
 	return N2;
+    }
+
+    public double getN2(int i, int j) {
+	--i;
+	if (i < 0 || i > this.N2.length) {
+	    throw new ArrayIndexOutOfBoundsException("N2 i");
+	}
+	--j;
+	if (j < 0 || j > this.N2[0].length) {
+	    throw new ArrayIndexOutOfBoundsException("N2 j");
+	}
+	return N2[i][j];
     }
 
     public void setN2(double[][] N2) {
@@ -104,6 +127,18 @@ public class ELEM {
 	this.Nf = Nf;
     }
 
+    public double getNf(int i, int j) {
+	--i;
+	if (i < 0 || i > this.Nf.length) {
+	    throw new ArrayIndexOutOfBoundsException("Nf i");
+	}
+	--j;
+	if (j < 0 || j > this.Nf[0].length) {
+	    throw new ArrayIndexOutOfBoundsException("Nf j");
+	}
+	return Nf[i][j];
+    }
+
     public void setNf(int i, int j, double val) {
 	--i;
 	if (i < 0 || i > this.Nf.length) {
@@ -136,9 +171,9 @@ public class ELEM {
     public Gran[] getSf() {
 	return Sf;
     }
-    
-     public Gran getSf(int i) {
-	 --i;
+
+    public Gran getSf(int i) {
+	--i;
 	if (i < 0 || i > Sf.length) {
 	    throw new ArrayIndexOutOfBoundsException("Sf");
 	}
@@ -152,7 +187,17 @@ public class ELEM {
     public double[] getW() {
 	return W;
     }
+    
 
+    public double getW(int i) {
+	--i;
+	if (i < 0 || i > W.length) {
+	    throw new ArrayIndexOutOfBoundsException("W");
+	}
+	return W[i];
+    }
+    
+    
     public void setW(double[] W) {
 	this.W = W;
     }
