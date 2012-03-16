@@ -595,9 +595,9 @@ public class TEMP2D {
 
 	for (I = 1; I <= mEL4.getNbn(); ++I) {
 	    Id = Math.abs(mGr.getEL(NEL).getNop(I));
-	    X[I] = mGr.getND(Id).getX();
-	    Y[I] = mGr.getND(Id).getY();
-	    Temp_0[I] = mGr.getND(Id).getT();
+	    X[I-1] = mGr.getND(Id).getX();
+	    Y[I-1] = mGr.getND(Id).getY();
+	    Temp_0[I-1] = mGr.getND(Id).getT();
 	}
 
 	for (P = 1; P <= mEL4.getN_p(); ++P) {
@@ -641,8 +641,8 @@ public class TEMP2D {
 
 	for (I = 1; I <= 4; ++I) {
 	    Id = Math.abs(mGr.getEL(NEL).getNop(I));
-	    X[I] = mGr.getND(Id).getX();
-	    Y[I] = mGr.getND(Id).getY();
+	    X[I-1] = mGr.getND(Id).getX();
+	    Y[I-1] = mGr.getND(Id).getY();
 	}
 
 	for (iPov = 1; iPov <= mGr.getEL(NEL).getNpov(); ++iPov) {
@@ -673,10 +673,10 @@ public class TEMP2D {
 //			  ! petla po kolumnam matrycy
 			Ni = mEL4.getSf(Id).getNf(I, P);
 			Nn = mEL4.getSf(Id).getNf(N, P);
-			est[N][I] = est[N][I] + mAlfa * Nn * Ni * DetJ;
+			est[N-1][I-1] = est[N-1][I-1] + mAlfa * Nn * Ni * DetJ;
 		    }
 		    Pn = mAlfa * mT_otoczenia * Nn * DetJ;
-		    r[N] = r[N] + Pn;
+		    r[N-1] = r[N-1] + Pn;
 		}
 	    }
 	}
