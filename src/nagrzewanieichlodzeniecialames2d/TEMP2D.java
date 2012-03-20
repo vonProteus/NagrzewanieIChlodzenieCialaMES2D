@@ -7,6 +7,7 @@ package nagrzewanieichlodzeniecialames2d;
 import java.io.*;
 import nagrzewanieichlodzeniecialames2d.data.my_typ.ELEM;
 import nagrzewanieichlodzeniecialames2d.data.my_typ.Gr2d;
+import nagrzewanieichlodzeniecialames2d.data.my_typ.ReturnFromJacob_2d;
 
 /**
  *
@@ -595,13 +596,13 @@ public class TEMP2D {
 
 	for (I = 1; I <= mEL4.getNbn(); ++I) {
 	    Id = Math.abs(mGr.getEL(NEL).getNop(I));
-	    X[I-1] = mGr.getND(Id).getX();
-	    Y[I-1] = mGr.getND(Id).getY();
-	    Temp_0[I-1] = mGr.getND(Id).getT();
+	    X[I - 1] = mGr.getND(Id).getX();
+	    Y[I - 1] = mGr.getND(Id).getY();
+	    Temp_0[I - 1] = mGr.getND(Id).getT();
 	}
 
 	for (P = 1; P <= mEL4.getN_p(); ++P) {
-	    // TODO CALL Jacob_2d(J_,J_inv,P,mEL4%N_p,mEL4%NBN, mEL4%N1, mEL4%N2, X,Y,DetJ);
+	    this.Jacob_2d(J_, J_inv, P, mEL4.getN_p(), mEL4.getNbn(), mEL4.getN1(), mEL4.getN2(), X, Y, DetJ);
 	    T0p = 0;
 	    for (I = 1; I <= mEL4.getNbn(); ++I) {
 		Ndx[I - 1] = mEL4.getN1(I, P) * J_inv[1 - 1][1 - 1] + mEL4.getN2(I, P) * J_inv[1 - 1][2 - 1];
@@ -641,8 +642,8 @@ public class TEMP2D {
 
 	for (I = 1; I <= 4; ++I) {
 	    Id = Math.abs(mGr.getEL(NEL).getNop(I));
-	    X[I-1] = mGr.getND(Id).getX();
-	    Y[I-1] = mGr.getND(Id).getY();
+	    X[I - 1] = mGr.getND(Id).getX();
+	    Y[I - 1] = mGr.getND(Id).getY();
 	}
 
 	for (iPov = 1; iPov <= mGr.getEL(NEL).getNpov(); ++iPov) {
@@ -673,13 +674,137 @@ public class TEMP2D {
 //			  ! petla po kolumnam matrycy
 			Ni = mEL4.getSf(Id).getNf(I, P);
 			Nn = mEL4.getSf(Id).getNf(N, P);
-			est[N-1][I-1] = est[N-1][I-1] + mAlfa * Nn * Ni * DetJ;
+			est[N - 1][I - 1] = est[N - 1][I - 1] + mAlfa * Nn * Ni * DetJ;
 		    }
 		    Pn = mAlfa * mT_otoczenia * Nn * DetJ;
-		    r[N-1] = r[N-1] + Pn;
+		    r[N - 1] = r[N - 1] + Pn;
 		}
 	    }
 	}
 //	throw new UnsupportedOperationException("Not yet implemented PRE_heat_pov_mat");
+    }
+
+    private ReturnFromJacob_2d Jacob_2d(double[][] J_, double[][] J_inv, int p, int N_p, int NBN, double[][] N1, double[][] N2, double[] X, double[] Y, double DetJ) {
+
+	int i;
+	ReturnFromJacob_2d r = new ReturnFromJacob_2d();
+	
+	for (int a = 0; a < J_.length; ++a) {
+	    for (int b = 0; b < J_[0].length; ++b) {
+		J_[a][b] = 0;
+	    }
+	}
+
+	for (int a = 0; a < J_inv.length; ++a) {
+	    for (int b = 0; b < J_inv[0].length; ++b) {
+		J_inv[a][b] = 0;
+	    }
+	}
+	for (i = 1; i <= NBN; ++i) {
+	    J_[1 - 1][1 - 1] = J_[1 - 1][1 - 1] + N1[i - 1][p - 1] * X[i - 1];
+	    J_[1 - 1][2 - 1] = J_[1 - 1][2 - 1] + N1[i - 1][p - 1] * Y[i - 1];
+	    J_[2 - 1][1 - 1] = J_[2 - 1][1 - 1] + N2[i - 1][p - 1] * X[i - 1];
+	    J_[2 - 1][2 - 1] = J_[2 - 1][2 - 1] + N2[i - 1][p - 1] * Y[i - 1];
+	}
+
+	DetJ = J_[1 - 1][1 - 1] * J_[2 - 1][2 - 1] - J_[1 - 1][2 - 1] * J_[2 - 1][1 - 1];
+	i = 2;
+	
+//   CALL Inv_MAT(i,J_,J_inv);
+	
+	r.setDetJ(DetJ);
+	r.setJ_(J_);
+	r.setJ_inv(J_inv);
+	r.setN1(N1);
+	r.setN2(N2);
+	r.setNBN(NBN);
+	r.setN_p(N_p);
+	r.setP(p);
+	r.setX(X);
+	r.setY(Y);
+	r.setI(i);
+	
+	try {
+	    this.Inv_MAT(r);
+	} catch (Exception e) {
+	    System.out.print(e.getMessage()+"\n");
+	    e.printStackTrace();
+	}
+	
+	
+	
+	return r;
+    }
+
+    private void Inv_MAT(ReturnFromJacob_2d r) throws Exception {
+	
+	int n = r.getI();
+	double[][] mat = r.getJ_();
+	double[][] inv = r.getJ_inv();
+
+	double[][] A = new double[n][2*n];
+	double[] tempRow;
+	double pivElt,tarElt;
+	int pivRow, tarRow;
+	
+	int k;
+
+
+
+	for (int a = 0; a <A.length ; ++a) {
+	    for (int b = 0; b < A[0].length ; ++b) {
+		A[a][b] = 0;
+	    }
+	}
+	
+	for (int a = 1; a <= n ; ++a) {
+	    for (int b = 1; b <= n ; ++b) {
+		A[a-1][b-1] = mat[a-1][b-1];
+	    }
+	}
+	
+	
+	
+ for (int I = 1; I <= n;++I){ //           ! identity in cols N+1 to 2N
+     A[I - 1][n + I - 1] = 1;
+	}
+	for (pivRow = 1; pivRow <= n; ++pivRow) {
+	    pivElt = A[pivRow - 1][pivRow - 1];
+
+	    if (pivElt == 0) {
+		k = pivRow + 1;
+		while (pivElt == 0 && k <= n) {
+		    pivElt = A[k - 1][pivRow - 1];
+		    ++k;
+		}
+		if (pivElt == 0) {
+//	  System.out.print("Couldn't find a non-zero pivot: solution rubbish\n");
+		    throw new Exception("Couldn't find a non-zero pivot: solution rubbish");
+		} else {
+		    tempRow = new double[2 * n];
+		    for (int a = 1; a <= 2 * n; ++a) {
+			tempRow[a - 1] = A[pivRow - 1][a - 1];
+		    }
+		    --k;
+		    for (int a = 1; a <= 2 * n; ++a) {
+			A[pivRow][a-1]=A[k-1][a-1];
+		    }
+		    for (int a = 1; a <= 2 * n; ++a) {
+			A[pivRow][a-1]=tempRow[a-1];
+		    }
+		}
+	    }
+	}
+	for (int a = 1; a <= 2 * n; ++a) {
+	    A[pivRow][a - 1] = A[pivRow][a - 1] / pivElt;
+	}
+for(tarRow = 1; tarRow<= n; ++tarRow){
+    if(tarRow){
+	
+    }
+}
+
+ 
+//	throw new UnsupportedOperationException("Not yet implemented");
     }
 }
