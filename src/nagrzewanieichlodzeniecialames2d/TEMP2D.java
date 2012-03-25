@@ -406,8 +406,8 @@ public class TEMP2D {
 
 
 
-	mA = new double[mLDA][mGr.getNh()];
-//	mA = new double[mGr.getNh()][mGr.getNh()];
+//	mA = new double[mLDA][mGr.getNh()];
+	mA = new double[mGr.getNh()][mGr.getNh()];
 	mB = new double[mGr.getNh()];
 	mX = new double[mGr.getNh()];
 
@@ -535,10 +535,10 @@ public class TEMP2D {
 		for (j = 1; j <= mEL4.getNbn(); ++j) {
 		    jj = nk[j - 1];
 		    iB = mLDA + ii - jj;
-		    if ((jj >= ii) && (iB <= mLDA)) {
-			mA[iB - 1][jj - 1] = mA[iB - 1][jj - 1] + est[i - 1][j - 1];
-		    }
-//	!			mA(ii,jj) = mA(ii,jj) + est(i,j); ! wypelnienie pelnej matrycy
+//		    if ((jj >= ii) && (iB <= mLDA)) {
+//			mA[iB - 1][jj - 1] = mA[iB - 1][jj - 1] + est[i - 1][j - 1];
+//		    }
+		    mA[ii - 1][jj - 1] = mA[ii - 1][jj - 1] + est[i - 1][j - 1]; // ! wypelnienie pelnej matrycy
 		}
 		mB[ii - 1] = mB[ii - 1] + r[i - 1];
 	    }
@@ -551,8 +551,8 @@ public class TEMP2D {
 // TODO	CALL DLSAQS (mGr%nh, mA, mLDA, NCODA, mB, mX)
 // Program rozwiazania ukladu rownan z pasmowej matrycej
 
-//	NCODA = 1;
-//	this.DLSARG(mGr.getNh(), mA, mGr.getNh(), mB, NCODA, mX);
+	NCODA = 1;
+	this.gauss();
 
 //		NCODA=1;
 // TODO	CALL DLSARG (mGr%nh, mA, mGr%nh, mB, NCODA, mX)
@@ -850,10 +850,98 @@ public class TEMP2D {
     }
 
     private void DLSAQS(int nh, double[][] mA, int mLDA, int NCODA, double[] mB, double[] mX) {
-	throw new UnsupportedOperationException("Not yet implemented");
+	throw new UnsupportedOperationException("Not yet implemented DLSAQS");
     }
 
-    private void DLSARG(int nh, double[][] mA, int nh0, double[] mB, int NCODA, double[] mX) {
-	throw new UnsupportedOperationException("Not yet implemented");
+    private void gauss() {
+
+
+	int m = mA.length;
+	int n = mA[0].length;
+
+
+	int i, j;
+	double[][] matrix = new double[m][n];
+	double[] b = new double[m];
+
+	for (int a = 0; a < matrix.length; ++a) {
+	    for (int c = 0; c < matrix[0].length; ++c) {
+		matrix[a][c] = mA[a][c];
+	    }
+	    b[a] = mB[a];
+	}
+
+	double EPSILON = 1e-10;
+
+	// zmienne pomocnicze (jako lokalne w celu mikrooptymalizacji)
+	double diagValue, alpha, sum;
+
+
+	// indeks wiersza z pivotem
+	int max;
+
+	// przechodzimy przez wszystkie kolumny
+	for (int p = 0; p < m; p++) {
+
+	    // szukamy pivotu
+	    max = p;
+	    for (int ri = p + 1; ri < m; ri++) {
+		if (Math.abs(matrix[ri][p]) > Math.abs(matrix[max][p])) {
+		    max = ri;
+		}
+	    }
+
+	    // zamieniamy wiersze p oraz maxi miejscami
+	    if (p != max) {
+		double[] temp = matrix[p];
+		matrix[p] = matrix[max];
+		matrix[max] = temp;
+		double t = b[p];
+		b[p] = b[max];
+		b[max] = t;
+	    }
+
+	    // dzielimy cały wiersz przez wartość na diagonali
+	    diagValue = matrix[p][p];
+	    for (int c = 0; c < m; c++) {
+		matrix[p][c] /= diagValue;
+	    }
+	    b[p] /= diagValue;
+
+	    // jeśli macierz osobliwa (lub prawie), to kończy
+	    if (Math.abs(matrix[p][p]) <= EPSILON) {
+		// TODO obsłużyć ten wyjątek?
+		throw new RuntimeException("Macierz (prawie) osobliwa");
+	    }
+
+	    // odejmujemy nasz wiersz od pozostałych po nim
+	    for (int ri = p + 1; ri < m; ri++) {
+		alpha = matrix[ri][p] / matrix[p][p];
+		for (int c = p; c < m; c++) {
+		    matrix[ri][c] -= alpha * matrix[p][c];
+		}
+		b[ri] -= alpha * b[p];
+	    }
+	}
+
+	// back substitution
+	for (int ri = m - 1; ri >= 0; ri--) {
+	    sum = 0;
+	    for (int c = ri + 1; c < m; c++) {
+		sum += matrix[ri][c] * b[c];
+	    }
+	    b[ri] = (b[ri] - sum) / matrix[ri][ri];
+	}
+
+//    outMatrix(matrix,m,m);
+//    outVect(b, m);
+
+	for (int a = 0; a < b.length; ++a) {
+	    mX[a] = b[a];
+	}
+
+
+
+//	throw new UnsupportedOperationException("Not yet implemented gauss");
     }
 }
