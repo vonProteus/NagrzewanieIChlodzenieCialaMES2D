@@ -544,9 +544,15 @@ public class TEMP2D {
 	    }
 	}
 
-	NCODA = mLDA - 1;
+//	NCODA = mLDA - 1;
+//	this.DLSAQS(mGr.getNh(), mA, mLDA, NCODA, mB, mX);
+
+//	NCODA = mLDA - 1;
 // TODO	CALL DLSAQS (mGr%nh, mA, mLDA, NCODA, mB, mX)
 // Program rozwiazania ukladu rownan z pasmowej matrycej
+
+//	NCODA = 1;
+//	this.DLSARG(mGr.getNh(), mA, mGr.getNh(), mB, NCODA, mX);
 
 //		NCODA=1;
 // TODO	CALL DLSARG (mGr%nh, mA, mGr%nh, mB, NCODA, mX)
@@ -602,7 +608,21 @@ public class TEMP2D {
 	}
 
 	for (P = 1; P <= mEL4.getN_p(); ++P) {
-	    this.Jacob_2d(J_, J_inv, P, mEL4.getN_p(), mEL4.getNbn(), mEL4.getN1(), mEL4.getN2(), X, Y, DetJ);
+	    ReturnFromJacob_2d jacobReturn = this.Jacob_2d(J_, J_inv, P, mEL4.getN_p(), mEL4.getNbn(), mEL4.getN1(), mEL4.getN2(), X, Y, DetJ);
+
+	    //<editor-fold defaultstate="collapsed" desc="return from Jacob_2d">
+	    J_ = jacobReturn.getJ_();
+	    J_inv = jacobReturn.getJ_inv();
+	    P = jacobReturn.getP();
+	    mEL4.setN_p(jacobReturn.getN_p());
+	    mEL4.setNbnp(jacobReturn.getNBN());
+	    mEL4.setN1(jacobReturn.getN1());
+	    mEL4.setN2(jacobReturn.getN2());
+	    X = jacobReturn.getX();
+	    Y = jacobReturn.getY();
+	    DetJ = jacobReturn.getDetJ();
+	    //</editor-fold>
+
 	    T0p = 0;
 	    for (I = 1; I <= mEL4.getNbn(); ++I) {
 		Ndx[I - 1] = mEL4.getN1(I, P) * J_inv[1 - 1][1 - 1] + mEL4.getN2(I, P) * J_inv[1 - 1][2 - 1];
@@ -688,7 +708,7 @@ public class TEMP2D {
 
 	int i;
 	ReturnFromJacob_2d r = new ReturnFromJacob_2d();
-	
+
 	for (int a = 0; a < J_.length; ++a) {
 	    for (int b = 0; b < J_[0].length; ++b) {
 		J_[a][b] = 0;
@@ -709,9 +729,9 @@ public class TEMP2D {
 
 	DetJ = J_[1 - 1][1 - 1] * J_[2 - 1][2 - 1] - J_[1 - 1][2 - 1] * J_[2 - 1][1 - 1];
 	i = 2;
-	
+
 //   CALL Inv_MAT(i,J_,J_inv);
-	
+
 	r.setDetJ(DetJ);
 	r.setJ_(J_);
 	r.setJ_inv(J_inv);
@@ -723,50 +743,51 @@ public class TEMP2D {
 	r.setX(X);
 	r.setY(Y);
 	r.setI(i);
-	
+
 	try {
 	    this.Inv_MAT(r);
 	} catch (Exception e) {
-	    System.out.print(e.getMessage()+"\n");
+	    System.out.print(e.getMessage() + "\n");
 	    e.printStackTrace();
 	}
-	
-	
-	
+
+
+
 	return r;
     }
 
     private void Inv_MAT(ReturnFromJacob_2d r) throws Exception {
-	
+
 	int n = r.getI();
 	double[][] mat = r.getJ_();
 	double[][] inv = r.getJ_inv();
 
-	double[][] A = new double[n][2*n];
+	double[][] A = new double[n][2 * n];
 	double[] tempRow;
-	double pivElt,tarElt;
+	double pivElt, tarElt;
 	int pivRow, tarRow;
-	
+
 	int k;
 
+	pivElt = 0;
 
 
-	for (int a = 0; a <A.length ; ++a) {
-	    for (int b = 0; b < A[0].length ; ++b) {
+	for (int a = 0; a < A.length; ++a) {
+	    for (int b = 0; b < A[0].length; ++b) {
 		A[a][b] = 0;
 	    }
 	}
-	
-	for (int a = 1; a <= n ; ++a) {
-	    for (int b = 1; b <= n ; ++b) {
-		A[a-1][b-1] = mat[a-1][b-1];
+
+	for (int a = 1; a <= n; ++a) {
+	    for (int b = 1; b <= n; ++b) {
+		A[a - 1][b - 1] = mat[a - 1][b - 1];
 	    }
 	}
-	
-	
-	
- for (int I = 1; I <= n;++I){ //           ! identity in cols N+1 to 2N
-     A[I - 1][n + I - 1] = 1;
+
+
+
+	for (int I = 1; I <= n; ++I) { //           ! identity in cols N+1 to 2N
+	    A[I - 1][n + I - 1] = 1;
 	}
 	for (pivRow = 1; pivRow <= n; ++pivRow) {
 	    pivElt = A[pivRow - 1][pivRow - 1];
@@ -787,24 +808,52 @@ public class TEMP2D {
 		    }
 		    --k;
 		    for (int a = 1; a <= 2 * n; ++a) {
-			A[pivRow][a-1]=A[k-1][a-1];
+			A[pivRow - 1][a - 1] = A[k - 1][a - 1];
 		    }
 		    for (int a = 1; a <= 2 * n; ++a) {
-			A[pivRow][a-1]=tempRow[a-1];
+			A[pivRow - 1][a - 1] = tempRow[a - 1];
 		    }
 		}
 	    }
-	}
-	for (int a = 1; a <= 2 * n; ++a) {
-	    A[pivRow][a - 1] = A[pivRow][a - 1] / pivElt;
-	}
-for(tarRow = 1; tarRow<= n; ++tarRow){
-    if(tarRow){
-	
-    }
-}
 
- 
+	    for (int a = 1; a <= 2 * n; ++a) {
+		A[pivRow - 1][a - 1] = A[pivRow - 1][a - 1] / pivElt;
+	    }
+	    for (tarRow = 1; tarRow <= n; ++tarRow) {
+		if (tarRow != pivRow) {
+		    tarElt = A[tarRow - 1][pivRow - 1];
+		    for (int a = 1; a <= 2 * n; ++a) {
+			A[tarRow - 1][a - 1] = A[tarRow - 1][a - 1] - A[pivRow - 1][a - 1] * tarElt;
+		    }
+
+		}
+	    }
+	}
+
+
+	for (int a = 1; a <= n; ++a) {
+	    for (int b = n + 1; b < 2 * n; ++b) {
+		inv[a - 1][b - 1 - n] = A[a - 1][b - 1];
+	    }
+	}
+
+
+
+	r.setI(n);
+	r.setJ_(mat);
+	r.setJ_inv(inv);
+
+// ! finally extract the inverse from columns N+1 to 2N:
+// Inv = A( 1:N, N+1:2*N )
+
 //	throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    private void DLSAQS(int nh, double[][] mA, int mLDA, int NCODA, double[] mB, double[] mX) {
+	throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    private void DLSARG(int nh, double[][] mA, int nh0, double[] mB, int NCODA, double[] mX) {
+	throw new UnsupportedOperationException("Not yet implemented");
     }
 }
