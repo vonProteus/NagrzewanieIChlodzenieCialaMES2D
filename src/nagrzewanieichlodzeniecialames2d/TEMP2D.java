@@ -73,6 +73,7 @@ public class TEMP2D {
     }
 
     private void IniEL4() {
+	// 1
 	mEL4 = new ELEM();
 	double Alfa, L1, L2, e, n, SN;
 	int iP, i;
@@ -642,8 +643,8 @@ public class TEMP2D {
 		    est[N - 1][I - 1] = est[N - 1][I - 1] + Hin + Cin / mdTime;			// ! formula(4.8)
 		    r[N - 1] = r[N - 1] + (Cin / mdTime) * T0p;
 		}
-//!			Q = 0.8*Tp*Hp
-//!			r(n)=r(n) + Nn*Q*DetJ;
+//			Q = 0.8*Tp*Hp
+//			r(n)=r(n) + Nn*Q*DetJ;
 	    }
 	}
 
@@ -832,7 +833,7 @@ public class TEMP2D {
 
 
 	for (int a = 1; a <= n; ++a) {
-	    for (int b = n + 1; b < 2 * n; ++b) {
+	    for (int b = n + 1; b <= 2 * n; ++b) {
 		inv[a - 1][b - 1 - n] = A[a - 1][b - 1];
 	    }
 	}
