@@ -7,6 +7,7 @@ package nagrzewanieichlodzeniecialames2d;
 import java.io.*;
 import nagrzewanieichlodzeniecialames2d.data.my_typ.ELEM;
 import nagrzewanieichlodzeniecialames2d.data.my_typ.Gr2d;
+import nagrzewanieichlodzeniecialames2d.data.my_typ.REOLO;
 import nagrzewanieichlodzeniecialames2d.data.my_typ.ReturnFromJacob_2d;
 
 /**
@@ -23,10 +24,15 @@ public class TEMP2D {
     private double mT_otoczenia;
     private double mAlfa;
     private double mH0;
+    private double mH1;
     private double mB0;
+    private double mV;
+    private double mForce;
+    private double mS;
     private int mNhH;
     private int mNhB;
     private int mLDA;
+    private REOLO mREO;
     private double mC;
     private double mK;
     private double mR;
@@ -37,6 +43,8 @@ public class TEMP2D {
     private double[] mcpY = new double[9];
     private double[][] est = new double[4][4];
     private double[] r = new double[4];
+    private double[][] FeSM = new double[9][9];
+    private double[] feRhs = new double[9];
     private double[] mB;
     private double[][] mA;
     private double[] mX;
@@ -69,6 +77,22 @@ public class TEMP2D {
 	    this.SOLVER();
 	    this.WriteControlPoints();
 	}
+
+    }
+
+    public void goPLASTOMETR2D() {
+	double Asr, dTauMax, TauP;
+	int iTau, n, Ntau, i, iErr;
+	this.IniEL4();
+	this.InpData();
+	this.GenGrid2d(mH0, mB0, mNhH, mNhB, mGr);
+	this.SetControlPoints();
+
+	Asr = mREO.getK() / (mREO.getC() * mREO.getR());
+	mdTime = (((double) (mB0 / (1e3 * mNhB))) * ((double) (mB0 / (1e3 * mNhB)))) / (0.5 * Asr);
+	mTime = (mH0 - mH1) / mV;
+	Ntau = ((int) (mTime / mdTime)) + 1;
+	mdTime = mTime / ((double) (Ntau));
 
     }
 
