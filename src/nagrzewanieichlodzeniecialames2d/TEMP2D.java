@@ -687,7 +687,6 @@ public class TEMP2D {
 	    J_inv = jacobReturn.getJ_inv();
 	    P = jacobReturn.getP();
 	    mEL4.setN_p(jacobReturn.getN_p());
-	    mEL4.setNbnp(jacobReturn.getNBN());
 	    mEL4.setN1(jacobReturn.getN1());
 	    mEL4.setN2(jacobReturn.getN2());
 	    X = jacobReturn.getX();
@@ -1225,7 +1224,171 @@ public class TEMP2D {
     }
 
     private void calcFeSM_main(int NEL) {
-	throw new UnsupportedOperationException("Not yet implemented calcFeSM_main");
+
+	int i, N, P, Id;
+	int Row1, Row2, Row3, C1, C2, C3, NBN, NBNP;
+	double DetJ, Esp, Nn, Ni, Rp;
+
+
+	double[][] J_ = new double[2][2];
+	double[][] J_inv = new double[2][2];
+	double[] Ndx, Ndy, Es, X, Y, Vx, Vy, t, Eps;
+
+	Ndx = new double[4];
+	Ndy = new double[4];
+	Es = new double[4];
+	X = new double[4];
+	Y = new double[4];
+	Vx = new double[4];
+	Vy = new double[4];
+	t = new double[4];
+	Eps = new double[4];
+
+	int[] St = new int[4];
+
+	double Xsr, VrSr, Ex, Ey, Exy, Etg, Ei, Si, tp, Epsp;
+	int TipTaskSlv = 2;
+
+
+	NBN = mEL4.getNbn();
+	NBNP = mEL4.getNbnp();
+	Xsr = 0;
+	for (i = 1; i <= NBN; ++i) {
+	    Id = Math.abs(mGr.getEL(NEL).getNop(i));
+	    X[i - 1] = mGr.getND(Id).getX();
+	    Xsr += X[i - 1];
+	    Y[i - 1] = mGr.getND(Id).getY();
+	    Es[i - 1] = mGr.getND(Id).getEs();
+	    Vx[i - 1] = mGr.getND(Id).getVx();
+	    Vy[i - 1] = mGr.getND(Id).getVy();
+	    St[i - 1] = mGr.getND(Id).getStatus();
+	    t[i - 1] = mGr.getND(Id).getT();
+	    Eps[i - 1] = mGr.getND(Id).getEpsi();
+	}
+	Xsr = Xsr / NBN;
+
+
+	for (P = 1; P <= mEL4.getN_p(); ++P) {
+
+	    ReturnFromJacob_2d jacobReturn = this.Jacob_2d(J_, J_inv, P, mEL4.getN_p(), NBN, mEL4.getN1(), mEL4.getN2(), X, Y, 0);
+
+	    //<editor-fold defaultstate="collapsed" desc="return from Jacob_2d">
+	    J_ = jacobReturn.getJ_();
+	    J_inv = jacobReturn.getJ_inv();
+	    P = jacobReturn.getP();
+	    mEL4.setN_p(jacobReturn.getN_p());
+//	    mEL4.setNbnp(jacobReturn.getNBN());
+	    mEL4.setN1(jacobReturn.getN1());
+	    mEL4.setN2(jacobReturn.getN2());
+	    X = jacobReturn.getX();
+	    Y = jacobReturn.getY();
+	    DetJ = jacobReturn.getDetJ();
+	    //</editor-fold>
+
+	    for (i = 1; i <= NBN; ++i) {
+		Ndx[i - 1] = mEL4.getN1(i, P) * J_inv[1 - 1][1 - 1] + mEL4.getN2(i, P) * J_inv[1 - 1][2 - 1];
+		Ndy[i - 1] = mEL4.getN1(i, P) * J_inv[2 - 1][1 - 1] + mEL4.getN2(i, P) * J_inv[2 - 1][2 - 1];
+	    }
+
+
+	    Ex = 0;
+	    Ey = 0;
+	    Exy = 0;
+	    Rp = 0;
+	    VrSr = 0;
+	    tp = 0;
+	    Epsp = 0;
+	    for (i = 1; i <= NBN; ++i) {
+
+		Rp = (int) (Rp + X[i - 1] * mEL4.getNf(i, P));
+		VrSr = VrSr + Vx[i - 1] * mEL4.getNf(i, P);
+		tp = tp + t[i - 1] * mEL4.getNf(i, P);
+		Epsp = Epsp + Eps[i - 1] * mEL4.getNf(i, P);
+		Ex = Ex + Vx[i - 1] * Ndx[i - 1];
+		Ey = Ey + Vy[i - 1] * Ndy[i - 1];
+		Exy = Exy + 0.5 * (Vx[i - 1] * Ndy[i - 1] + Vy[i - 1] * Ndx[i - 1]);
+	    }
+
+	    Etg = VrSr / Rp;
+	    Ei = Math.sqrt((2.0 / 3.0) * ((Ex - Ey) * (Ex - Ey) + (Ey - Etg) * (Ey - Etg) + (Etg - Ex) * (Etg - Ex)) + 4 * (Exy * Exy));
+
+	    if (Ei <= 0.0001) {
+		Ei = 0.0001;
+	    }
+	    if (Epsp <= 0.0001) {
+		Epsp = 0.0001;
+	    }
+
+	    Si = mREO.getA() * Math.exp(-mREO.getM1() * tp) * Math.pow(Epsp, mREO.getM2()) * Math.pow(Ei, mREO.getM3()) * Math.exp(-Epsp * mREO.getM4());
+
+	    Esp = Si / Ei;
+
+
+	    DetJ = DetJ * mEL4.getW(P);
+
+	    for (N = 1; N <= NBN; ++N) {
+		Row1 = N;
+		Row2 = NBN + N;
+		Row3 = 2 * NBN + N;
+		for (i = 1; i <= NBN; ++i) {
+		    C1 = i;
+		    C2 = NBN-1 + i;
+		    C3 = 2 * NBN -2 + i;
+
+//		    System.out.print("c1:"+C1 + " c2:"+C2+" c3:"+C3+"\n");
+		    
+		    
+		    Ni = mEL4.getNf(i, P);
+		    Nn = mEL4.getNf(N, P);
+
+		    if (TipTaskSlv == 1) {
+//			Odksztalcenie plaskie 
+			FeSM[Row1 - 1][C1 - 1] += Esp * (2 * Ndx[N - 1] * Ndx[i - 1] + Ndy[N - 1] * Ndy[i - 1]) * DetJ;
+			FeSM[Row1 - 1][C2 - 1] += Esp * Ndx[i - 1] * Ndy[N - 1] * DetJ;
+
+			if (i <= mEL4.getNbnp()) {
+			    FeSM[Row1 - 1][C3 - 1] += Ndx[N - 1] * DetJ * mEL4.getHk(i, P);
+			}
+
+
+			FeSM[Row2 - 1][C1 - 1] += Esp * Ndx[N - 1] * Ndy[i - 1] * DetJ;
+			FeSM[Row2 - 1][C2 - 1] += Esp * (2 * Ndy[N - 1] * Ndy[i - 1] + Ndx[N - 1] * Ndx[i - 1]) * DetJ;
+
+			if (i <= mEL4.getNbnp()) {
+			    FeSM[Row2 - 1][C3 - 1] += Ndy[N - 1] * DetJ * mEL4.getHk(i, P);
+			}
+
+			if (N <= mEL4.getNbnp()) {
+			    FeSM[Row3 - 1][C1 - 1] += Ndx[i - 1] * DetJ * mEL4.getHk(N, P);
+			    FeSM[Row3 - 1][C2 - 1] += Ndy[i - 1] * DetJ * mEL4.getHk(N, P);
+			}
+		    } else {
+//			*********  x->R  **************
+//			Odksztalcenie osiowosymetryczne 
+			FeSM[Row1 - 1][C1 - 1] += Esp * (2 * Ndx[N - 1] * Ndx[i - 1] * Rp + Ndy[N - 1] * Ndy[i - 1] * Rp + 2 * Ni * Nn / Rp) * DetJ;
+			FeSM[Row1 - 1][C2 - 1] += Esp * Ndx[i - 1] * Ndy[N - 1] * DetJ * Rp;
+
+			if (i <= mEL4.getNbnp()) {
+			    FeSM[Row1 - 1][C3 - 1] += (Ndx[N - 1] * Rp + Nn) * DetJ * mEL4.getHk(i, P);
+			}
+
+			FeSM[Row2 - 1][C1 - 1] += Esp * Ndx[N - 1] * Ndy[i - 1] * DetJ * Rp;
+			FeSM[Row2 - 1][C2 - 1] += Esp * (2 * Ndy[N - 1] * Ndy[i - 1] + Ndx[N - 1] * Ndx[i - 1]) * DetJ * Rp;
+
+			if (i <= mEL4.getNbnp()) {
+			    FeSM[Row2 - 1][C3 - 1] += Ndy[N - 1] * DetJ * mEL4.getHk(i, P) * Rp;
+			}
+
+			if (N <= mEL4.getNbnp()) {
+			    FeSM[Row3 - 1][C1 - 1] += (Ndx[i - 1] + Ni / Rp) * DetJ * mEL4.getHk(N, P) * Rp;
+			    FeSM[Row3 - 1][C2 - 1] += Ndy[i - 1] * DetJ * mEL4.getHk(N, P) * Rp;
+			}
+		    }
+
+		}//I
+	    }// N
+	}//p
+//	throw new UnsupportedOperationException("Not yet implemented calcFeSM_main");
     }
 
     private void calcFeSM_corr(int NEL) {

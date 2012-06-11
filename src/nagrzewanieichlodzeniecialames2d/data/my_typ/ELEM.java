@@ -230,26 +230,26 @@ public class ELEM {
      public double getHk(int i, int j) {
 	--i;
 	if (i < 0 || i > this.Hk.length) {
-	    throw new ArrayIndexOutOfBoundsException("Nf i");
+	    throw new ArrayIndexOutOfBoundsException("Hk i="+i);
 	}
 	--j;
 	if (j < 0 || j > this.Hk[0].length) {
-	    throw new ArrayIndexOutOfBoundsException("Nf j");
+	    throw new ArrayIndexOutOfBoundsException("Hk j="+j);
 	}
-	return Nf[i][j];
+	return Hk[i][j];
     }
 
     public void setHk(int i, int j, double val) {
 	--i;
 	if (i < 0 || i > this.Hk.length) {
-	    throw new ArrayIndexOutOfBoundsException("Nf i");
+	    throw new ArrayIndexOutOfBoundsException("Hk i="+i);
 	}
 	--j;
 	if (j < 0 || j > this.Hk[0].length) {
-	    throw new ArrayIndexOutOfBoundsException("Nf j");
+	    throw new ArrayIndexOutOfBoundsException("Hk j="+j);
 	}
 
-	this.Nf[i][j] = val;
+	this.Hk[i][j] = val;
     }
     
     //</editor-fold>

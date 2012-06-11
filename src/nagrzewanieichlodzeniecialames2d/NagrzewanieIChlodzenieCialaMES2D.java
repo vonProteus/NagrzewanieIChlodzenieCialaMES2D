@@ -19,6 +19,7 @@ public class NagrzewanieIChlodzenieCialaMES2D {
 	try {
 	    TEMP2D myTemp2d = new TEMP2D();
 	    myTemp2d.goPLASTOMETR2D();
+//	    myTemp2d.go();
 
 	} catch (Exception e) {
 	    System.out.print("error " + e.getMessage() + "\n");
