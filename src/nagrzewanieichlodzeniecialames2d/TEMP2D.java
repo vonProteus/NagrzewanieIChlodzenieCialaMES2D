@@ -4,13 +4,11 @@
  */
 package nagrzewanieichlodzeniecialames2d;
 
-import com.sun.org.apache.bcel.internal.generic.BREAKPOINT;
 import java.io.*;
 import nagrzewanieichlodzeniecialames2d.data.my_typ.ELEM;
 import nagrzewanieichlodzeniecialames2d.data.my_typ.Gr2d;
 import nagrzewanieichlodzeniecialames2d.data.my_typ.REOLO;
 import nagrzewanieichlodzeniecialames2d.data.my_typ.ReturnFromJacob_2d;
-import org.omg.CORBA.INTERNAL;
 
 /**
  *
