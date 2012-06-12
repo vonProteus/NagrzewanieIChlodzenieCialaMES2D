@@ -4,6 +4,7 @@
  */
 package nagrzewanieichlodzeniecialames2d;
 
+import com.sun.org.apache.bcel.internal.generic.BREAKPOINT;
 import java.io.*;
 import nagrzewanieichlodzeniecialames2d.data.my_typ.ELEM;
 import nagrzewanieichlodzeniecialames2d.data.my_typ.Gr2d;
@@ -1332,12 +1333,12 @@ public class TEMP2D {
 		Row3 = 2 * NBN + N;
 		for (i = 1; i <= NBN; ++i) {
 		    C1 = i;
-		    C2 = NBN-1 + i;
-		    C3 = 2 * NBN -2 + i;
+		    C2 = NBN - 1 + i;
+		    C3 = 2 * NBN - 2 + i;
 
 //		    System.out.print("c1:"+C1 + " c2:"+C2+" c3:"+C3+"\n");
-		    
-		    
+
+
 		    Ni = mEL4.getNf(i, P);
 		    Nn = mEL4.getNf(N, P);
 
@@ -1391,7 +1392,89 @@ public class TEMP2D {
 //	throw new UnsupportedOperationException("Not yet implemented calcFeSM_main");
     }
 
-    private void calcFeSM_corr(int NEL) {
-	throw new UnsupportedOperationException("Not yet implemented calcFeSM_corr");
+    private void calcFeSM_corr(int nElem) {
+	int i, nbn, j, Nzad, ii, nbnn;
+	int[] NUM_zad = new int[2];
+	int Status;
+	double[] VAL_zad = new double[2];
+
+	Nzad = 0;
+	NUM_zad[0] = 0;
+	VAL_zad[0] = 0;
+	NUM_zad[1] = 0;
+	VAL_zad[1] = 0;
+	nbn = mEL4.getNbn();
+	nbnn = nbn;
+
+	for (i = 1; i <= nbnn; ++i) {
+	    j = Math.abs(mGr.getEL(nElem).getNop(i));
+	    Status = mGr.getND(j).getStatus();
+
+	    if (Status > 0) {
+		switch (Status) {
+
+		    case 12:
+			Nzad = 1;
+			NUM_zad[1 - 1] = i;
+			VAL_zad[1 - 1] = 0.0;
+			break;
+
+		    case 11:
+			Nzad = 1;
+			NUM_zad[1 - 1] = i + nbn;
+			VAL_zad[1 - 1] = 0.0;
+			break;
+
+		    case 8:
+			Nzad = 2;
+			NUM_zad[1 - 1] = i;
+			VAL_zad[1 - 1] = 0; // x
+			NUM_zad[2 - 1] = i + nbn;
+			VAL_zad[2 - 1] = 0; // y
+			break;
+
+		    case 10:
+			Nzad = 1;
+			NUM_zad[1 - 1] = i + nbn;
+			VAL_zad[1] = mGr.getND(j).getVy();
+			break;
+
+		    case 9:
+			Nzad = 2;
+			NUM_zad[1 - 1] = i;
+			VAL_zad[1 - 1] = 0.0;// x
+			NUM_zad[2 - 1] = i + nbn;
+			VAL_zad[2 - 1] = mGr.getND(j).getVy();
+			break;
+
+		    default:
+			Nzad = 0;
+			break;
+		}
+
+		for (ii = 1; ii <= Nzad; ++ii) {
+		    this.mat_corr(NUM_zad[ii - 1], VAL_zad[ii - 1], 9, FeSM, FeRhs);
+		}
+	    }
+	}
+//	throw new UnsupportedOperationException("Not yet implemented calcFeSM_corr");
+    }
+
+    private void mat_corr(int Num, double val_, int ncn, double[][] FeSM_glob_est, double[] FeRhs_glob_r) {
+	int i, j;
+	for (j = 1; j <= ncn; ++j) {
+	    if (j != Num) {
+		FeSM[Num - 1][j - 1] = 0;
+	    }
+	}
+	FeRhs[Num - 1] = FeSM[Num - 1][Num - 1] * val_;
+	for (i = 1; i <= ncn; ++i) {
+	    if (i != Num) {
+		FeRhs[i - 1] -= FeSM[i - 1][Num - 1] * val_;
+		FeSM[i - 1][Num - 1] = 0;
+
+	    }
+	}
+//	throw new UnsupportedOperationException("Not yet implemented mat_corr");
     }
 }
