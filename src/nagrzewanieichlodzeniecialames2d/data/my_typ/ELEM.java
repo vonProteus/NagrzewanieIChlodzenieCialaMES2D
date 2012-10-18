@@ -16,6 +16,7 @@ public class ELEM {
     private double[][] N1;
     private double[][] N2;
     private double[][] Nf;
+    private double[][] Hk;
     private Cor_L[] P;
     private Cor_L[] L;
     private double[] W;
@@ -217,6 +218,40 @@ public class ELEM {
     public void setNbnp(int nbnp) {
 	this.nbnp = nbnp;
     }
+
+    public double[][] getHk() {
+	return Hk;
+    }
+
+    public void setHk(double[][] Hk) {
+	this.Hk = Hk;
+    }
+    
+     public double getHk(int i, int j) {
+	--i;
+	if (i < 0 || i > this.Hk.length) {
+	    throw new ArrayIndexOutOfBoundsException("Hk i="+i);
+	}
+	--j;
+	if (j < 0 || j > this.Hk[0].length) {
+	    throw new ArrayIndexOutOfBoundsException("Hk j="+j);
+	}
+	return Hk[i][j];
+    }
+
+    public void setHk(int i, int j, double val) {
+	--i;
+	if (i < 0 || i > this.Hk.length) {
+	    throw new ArrayIndexOutOfBoundsException("Hk i="+i);
+	}
+	--j;
+	if (j < 0 || j > this.Hk[0].length) {
+	    throw new ArrayIndexOutOfBoundsException("Hk j="+j);
+	}
+
+	this.Hk[i][j] = val;
+    }
+    
     //</editor-fold>
 
     public void allocateN12fPWL() {
@@ -230,6 +265,7 @@ public class ELEM {
 	this.N1 = new double[this.nbn][this.N_p];
 	this.N2 = new double[this.nbn][this.N_p];
 	this.Nf = new double[this.nbn][this.N_p];
+	this.Hk = new double[this.nbnp][this.N_p];
 
 	this.P = new Cor_L[this.N_p];
 	this.W = new double[this.N_p];

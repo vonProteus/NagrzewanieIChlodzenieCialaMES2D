@@ -13,6 +13,7 @@ public class Element {
     private int[] nop = new int[4];
     private int Npov;
     private int[] aPov = new int[2];
+    private double Se;
 
     //<editor-fold defaultstate="collapsed" desc="seters&geters">
     public int getNpov() {
@@ -26,8 +27,9 @@ public class Element {
     public int[] getaPov() {
 	return aPov;
     }
+
     public int getaPov(int i) {
-	 --i;
+	--i;
 	if (i < 0 || i > aPov.length) {
 	    throw new ArrayIndexOutOfBoundsException("aPov");
 	}
@@ -37,7 +39,7 @@ public class Element {
     public void setaPov(int[] aPov) {
 	this.aPov = aPov;
     }
-    
+
     public void setaPov(int i, int val) {
 	--i;
 	if (i < 0 || i > aPov.length) {
@@ -49,8 +51,9 @@ public class Element {
     public int[] getNop() {
 	return nop;
     }
-     public int getNop(int i) {
-	 --i;
+
+    public int getNop(int i) {
+	--i;
 	if (i < 0 || i > nop.length) {
 	    throw new ArrayIndexOutOfBoundsException("nop");
 	}
@@ -60,12 +63,21 @@ public class Element {
     public void setNop(int[] nop) {
 	this.nop = nop;
     }
+
     public void setNop(int i, int val) {
-	 --i;
+	--i;
 	if (i < 0 || i > nop.length) {
 	    throw new ArrayIndexOutOfBoundsException("nop");
 	}
 	this.nop[i] = val;
+    }
+
+    public double getSe() {
+	return Se;
+    }
+
+    public void setSe(double Se) {
+	this.Se = Se;
     }
     //</editor-fold>
 }

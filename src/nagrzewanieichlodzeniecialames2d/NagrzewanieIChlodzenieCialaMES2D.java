@@ -15,16 +15,17 @@ public class NagrzewanieIChlodzenieCialaMES2D {
      */
     public static void main(String[] args) {
 	System.out.print("Main start\n");
-	
+
 	try {
 	    TEMP2D myTemp2d = new TEMP2D();
-	    myTemp2d.go();
-	    
+	    myTemp2d.goPLASTOMETR2D();
+//	    myTemp2d.go();
+
 	} catch (Exception e) {
-	    System.out.print("error "+e.getMessage()+"\n");
+	    System.out.print("error " + e.getMessage() + "\n");
 	    e.printStackTrace();
 	}
-	
+
 	System.out.print("Main end\n");
     }
 }

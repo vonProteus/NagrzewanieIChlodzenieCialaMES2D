@@ -1,0 +1,23 @@
+**************************************************************
+Dane do programu symulacji za pomoc¹ MES pola temperatury
+A.Milenin, Podstawy MES, Kraków, AGH, 2008
+**************************************************************
+100     		mTbegin       Temperatura pocz¹tkowa, C
+1       		mdTime        Krok Czasowu, s
+1200    		mT_otoczenia  Temperatura otoczenia C
+300     		mAlfa         wspólczynnik wymiany ciepla  W/Cm2
+10     			mH0           wysokosc przekroju, mm
+5       		mH1	      wysokosc koncowa, mm
+5		 	mB0           szerokosc przekroju, mm
+2       		mV0           v, mm/s
+10    			mNhH          liczba wezlow po wysokosci
+10    			mNhB          liczba wezlow po szerokosci
+700     		mC            Cieplo wlasciwe, J/Ckg
+25      		mK            Wspolczynnik przewodzenia ciepla
+7800    		mR            Gestosc kg/m3
+3557.47199054235       	A
+0.00641169431740974    	m1
+0.035213               	m2
+0.1846                 	m3
+0.0                    	m4
+
