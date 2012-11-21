@@ -1022,7 +1022,7 @@ public class TEMP2D {
 
 
 
-//<editor-fold defaultstate="collapsed" desc="mA=0; 	mB=0; 	mX=0;">
+	//<editor-fold defaultstate="collapsed" desc="mA=0; 	mB=0; 	mX=0;">
 	for (int a = 0; a < mA.length; ++a) {
 	    for (int b = 0; b < mA[0].length; ++b) {
 		mA[a][b] = 0;
